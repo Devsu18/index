@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Debashish Lal — Tax Consultant &amp; Investor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:      #0a0a08;
+  --surface: #111110;
+  --border:  #222220;
+  --accent:  #c8a96e;
+  --accent2: #7eb8a4;
+  --text:    #e8e6df;
+  --muted:   #7a7870;
+  --dim:     #3a3830;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'DM Mono',monospace;font-size:13px;line-height:1.7;
+  overflow-x:hidden;cursor:none;
+}
+
+/* ── Cursor ───────────────────────────────────────────────── */
+#cur-dot{
+  position:fixed;top:0;left:0;width:8px;height:8px;
+  background:var(--accent);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-100px,-100px);
+}
+#cur-ring{
+  position:fixed;top:0;left:0;width:34px;height:34px;
+  border:1.5px solid var(--accent);border-radius:50%;
+  pointer-events:none;z-index:9998;opacity:.55;
+  transform:translate(-100px,-100px);
+  /* NO width/height/size transitions — only colour */
+  transition:border-color .2s,opacity .2s;
+}
+
+/* ── Grain ────────────────────────────────────────────────── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;
+  opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+}
+
+/* ── Nav ──────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:18px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid transparent;
+  transition:background .4s,border-color .4s,backdrop-filter .4s;
+}
+nav.scrolled{
+  background:rgba(10,10,8,.88);
+  border-color:var(--border);
+  backdrop-filter:blur(18px);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;
+  letter-spacing:.15em;color:var(--text);text-decoration:none;
+}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;transition:color .2s;
+}
+.nav-links a:hover{color:var(--accent)}
+
+/* ── Hero ─────────────────────────────────────────────────── */
+#hero{
+  min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;padding:120px 80px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:60px 60px;opacity:.28;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
+}
+.hero-glow1{
+  position:absolute;width:560px;height:560px;top:5%;left:-8%;
+  background:radial-gradient(circle,rgba(200,169,110,.07),transparent 70%);
+  pointer-events:none;
+}
+.hero-glow2{
+  position:absolute;width:360px;height:360px;bottom:8%;right:4%;
+  background:radial-gradient(circle,rgba(126,184,164,.06),transparent 70%);
+  pointer-events:none;
+}
+.hero-left{position:relative;z-index:2}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--accent);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:28px;
+  opacity:0;animation:fadeUp .8s ease .2s forwards;
+}
+.hero-tag::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(52px,6vw,90px);font-weight:300;
+  line-height:1.05;letter-spacing:-.01em;margin-bottom:8px;
+  opacity:0;animation:fadeUp .8s ease .35s forwards;
+}
+.hero-name em{font-style:italic;color:var(--accent)}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(15px,2vw,21px);font-weight:300;
+  color:var(--muted);letter-spacing:.04em;margin-bottom:32px;
+  opacity:0;animation:fadeUp .8s ease .5s forwards;
+}
+.hero-bio{
+  color:var(--muted);max-width:420px;line-height:1.9;
+  font-size:12.5px;margin-bottom:44px;
+  opacity:0;animation:fadeUp .8s ease .65s forwards;
+}
+.hero-btns{
+  display:flex;gap:14px;align-items:center;
+  opacity:0;animation:fadeUp .8s ease .8s forwards;
+}
+.btn-gold{
+  padding:12px 28px;background:var(--accent);color:var(--bg);
+  text-decoration:none;font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:500;
+  border:none;display:inline-block;
+  position:relative;overflow:hidden;transition:opacity .2s;
+}
+.btn-gold:hover{opacity:.88}
+.btn-outline{
+  padding:12px 28px;border:1px solid var(--border);
+  color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  transition:border-color .2s,color .2s;
+}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+.hero-right{
+  position:relative;z-index:2;
+  display:flex;justify-content:center;align-items:center;
+  opacity:0;animation:fadeIn 1s ease .9s forwards;
+}
+.avatar-wrap{position:relative;width:320px;height:400px}
+.avatar-frame{position:absolute;inset:0;border:1px solid var(--border)}
+.avatar-frame::before{
+  content:'';position:absolute;
+  top:-10px;left:-10px;right:10px;bottom:10px;
+  border:1px solid var(--dim);
+}
+.avatar-frame::after{
+  content:'';position:absolute;
+  top:10px;left:10px;right:-10px;bottom:-10px;
+  border:1px solid var(--dim);
+}
+.avatar-inner{
+  position:absolute;inset:0;background:var(--surface);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;
+}
+.avatar-initials{
+  width:76px;height:76px;border-radius:50%;background:var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--muted);
+}
+.avatar-hint{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.hero-stats{
+  position:absolute;bottom:-18px;left:-28px;
+  background:var(--surface);border:1px solid var(--border);
+  padding:14px 18px;display:flex;gap:22px;
+}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;
+  color:var(--accent);line-height:1;
+}
+.stat-lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* ── Sections ─────────────────────────────────────────────── */
+section{padding:96px 80px;border-top:1px solid var(--border)}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:60px}
+.sec-num{font-size:11px;color:var(--accent);letter-spacing:.15em}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(30px,4vw,46px);font-weight:300;letter-spacing:-.01em;
+}
+.sec-line{flex:1;height:1px;background:var(--border)}
+
+/* ── About ────────────────────────────────────────────────── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+.about-text p{color:var(--muted);line-height:1.95;margin-bottom:18px;font-size:13px}
+.about-text p strong{color:var(--text);font-weight:400}
+.detail-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 0;border-bottom:1px solid var(--border);
+}
+.detail-lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.detail-val{color:var(--text);font-size:12px}
+.detail-val a{color:var(--accent);text-decoration:none;transition:opacity .2s}
+.detail-val a:hover{opacity:.7}
+.detail-val.highlight{color:var(--accent)}
+
+/* ── Experience ───────────────────────────────────────────── */
+.exp-item{
+  display:grid;grid-template-columns:200px 1fr;
+  gap:44px;padding:44px 0;border-bottom:1px solid var(--border);position:relative;
+}
+.exp-item::before{
+  content:'';position:absolute;left:0;top:0;width:0;height:2px;
+  background:var(--accent);transition:width .4s ease;
+}
+.exp-item:hover::before{width:100%}
+.exp-period{font-size:11px;letter-spacing:.1em;color:var(--accent);margin-bottom:5px}
+.exp-co{color:var(--muted);font-size:12px}
+.exp-role{
+  font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:400;
+  margin-bottom:11px;line-height:1.2;
+}
+.exp-desc{color:var(--muted);line-height:1.85;margin-bottom:18px;font-size:12.5px}
+.exp-desc strong{color:var(--text);font-weight:400}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{
+  padding:4px 11px;border:1px solid var(--border);
+  font-size:11px;letter-spacing:.07em;color:var(--muted);transition:all .2s;
+}
+.tag:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── Skills ───────────────────────────────────────────────── */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.skill-group{background:var(--surface);padding:30px;transition:background .2s}
+.skill-group:hover{background:#161614}
+.skill-group-title{
+  font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;
+  margin-bottom:18px;color:var(--accent);
+}
+.skill-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.skill-name{font-size:12px;color:var(--muted)}
+.skill-track{width:76px;height:2px;background:var(--border);position:relative}
+.skill-fill{
+  position:absolute;left:0;top:0;bottom:0;background:var(--accent);
+  width:0;transition:width 1.1s ease;
+}
+
+/* ── Education / Certs ────────────────────────────────────── */
+.edu-item{
+  display:grid;grid-template-columns:200px 1fr;
+  gap:44px;padding:36px 0;border-bottom:1px solid var(--border);
+}
+.edu-yr{font-size:11px;letter-spacing:.1em;color:var(--accent2)}
+.edu-deg{
+  font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;margin-bottom:5px;
+}
+.edu-org{color:var(--muted);font-size:12px;margin-bottom:8px}
+.edu-note{color:var(--dim);font-size:11.5px;line-height:1.7}
+
+/* ── Projects ─────────────────────────────────────────────── */
+.confidential-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  padding:36px 44px;margin-bottom:44px;
+  display:flex;align-items:flex-start;gap:28px;
+}
+.conf-icon{
+  font-size:26px;color:var(--accent);flex-shrink:0;margin-top:3px;line-height:1;
+}
+.conf-title{
+  font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:400;
+  margin-bottom:10px;color:var(--text);
+}
+.conf-desc{color:var(--muted);font-size:12.5px;line-height:1.9;max-width:660px}
+.conf-desc strong{color:var(--text);font-weight:400}
+
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.proj-card{
+  background:var(--surface);padding:34px;
+  position:relative;overflow:hidden;transition:background .3s;
+}
+.proj-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transform:scaleX(0);transform-origin:left;transition:transform .4s ease;
+}
+.proj-card:hover{background:#161614}
+.proj-card:hover::before{transform:scaleX(1)}
+.proj-num{font-size:10px;letter-spacing:.2em;color:var(--dim);margin-bottom:14px}
+.proj-name{
+  font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;
+  margin-bottom:7px;line-height:1.2;
+}
+.proj-type{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent2);margin-bottom:11px;
+}
+.proj-desc{color:var(--muted);font-size:12px;line-height:1.8;margin-bottom:18px}
+.proj-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;transition:gap .2s;
+  background:none;border:none;padding:0;font-family:'DM Mono',monospace;cursor:pointer;
+}
+.proj-cta:hover{gap:13px}
+.proj-cta::after{content:'→'}
+
+/* ── Contact ──────────────────────────────────────────────── */
+#contact{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.contact-intro{
+  font-family:'Cormorant Garamond',serif;
+  font-size:30px;font-weight:300;line-height:1.35;margin-bottom:28px;
+}
+.contact-intro em{font-style:italic;color:var(--accent)}
+.contact-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 0;border-bottom:1px solid var(--border);
+  text-decoration:none;color:var(--text);transition:all .2s;
+}
+.contact-row:hover{color:var(--accent);padding-left:10px}
+.contact-lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.contact-val{font-size:12px;color:inherit}
+.schedule-pill{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--dim);
+  padding:4px 13px;transition:all .2s;
+}
+.contact-row:hover .schedule-pill{border-color:var(--accent);background:rgba(200,169,110,.06)}
+
+.contact-right{padding-top:90px}
+.form-group{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.form-lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.form-input,.form-textarea{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-family:'DM Mono',monospace;
+  font-size:13px;padding:13px 15px;outline:none;
+  transition:border-color .2s;resize:none;
+}
+.form-input:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{height:115px}
+
+/* ── Footer ───────────────────────────────────────────────── */
+footer{
+  padding:28px 80px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.foot-copy{font-size:11px;color:var(--dim);letter-spacing:.08em}
+.foot-top{
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color .2s;
+}
+.foot-top:hover{color:var(--accent)}
+
+/* ── Keyframes ────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ── Scroll-reveal ────────────────────────────────────────── */
+.sr{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.sr.on{opacity:1;transform:none}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--dim)}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media(max-width:900px){
+  #hero{grid-template-columns:1fr;padding:110px 28px 72px}
+  .hero-right{display:none}
+  section{padding:68px 28px}
+  .about-grid,.exp-item,.edu-item{grid-template-columns:1fr;gap:18px}
+  .skills-grid,.proj-grid{grid-template-columns:1fr}
+  #contact{grid-template-columns:1fr}
+  .contact-right{padding-top:0}
+  nav{padding:14px 22px}
+  .nav-links{gap:14px}
+  footer{padding:22px 28px;flex-direction:column;gap:10px;text-align:center}
+  .confidential-box{flex-direction:column;gap:14px;padding:26px}
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor elements -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- ── NAV ─────────────────────────────────────────────────── -->
+<nav id="nav">
+  <a class="nav-logo" href="#hero">DL<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow1"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">Open to Consulting &amp; Advisory</div>
+    <h1 class="hero-name">Debashish<br><em>Lal</em></h1>
+    <div class="hero-sub">Tax Consultant &amp; Accountant &nbsp;·&nbsp; Trader &amp; Investor</div>
+    <p class="hero-bio">
+      I'm Debashish Lal — a Tax Consultant, Accountant, and professional Investor based in Puri, Odisha.
+      With over five years of hands-on experience, I navigate complex taxation landscapes with precision
+      and integrity — from advisory and compliance to representing clients in Faceless Appeals before the
+      CIT(A). I also invest professionally across Indian and US markets via GIFT City.
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-gold">Get in touch</a>
+      <a href="#experience" class="btn-outline">View Work</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="avatar-wrap">
+      <div class="avatar-frame"></div>
+      <div class="avatar-inner">
+        <div class="avatar-initials">DL</div>
+        <div class="avatar-hint">Your Photo Here</div>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">5+</div><div class="stat-lbl">Years Exp.</div></div>
+        <div><div class="stat-num">2</div><div class="stat-lbl">Markets</div></div>
+        <div><div class="stat-num">&#x221E;</div><div class="stat-lbl">Cases Won</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="sec-head sr">
+    <span class="sec-num">01</span>
+    <h2 class="sec-title">About Me</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text sr">
+      <p>I'm Debashish Lal — a Tax Consultant, Accountant, and professional Investor based in Puri, Odisha.
+      With over five years of hands-on experience at <strong>R.K. Mahapatra &amp; Associates</strong>, I've built
+      a reputation for navigating complex taxation landscapes with precision and integrity.</p>
+      <p>From advising high-net-worth individuals on income tax strategy to <strong>representing clients in
+      Faceless Appeals before the CIT(A)</strong>, I bring both technical depth and courtroom-level confidence
+      to every case. Beyond taxation, I actively invest across <strong>Indian and US markets</strong> — the
+      latter through GIFT City — blending analytical discipline with a sharp eye for opportunity.</p>
+      <p>Certified in GST (NSDC) and holding a Diploma from NIFM, I combine formal expertise with continuous
+      learning. My work is built on <strong>trust, discretion, and results.</strong></p>
+    </div>
+    <div class="sr">
+      <div class="detail-row"><span class="detail-lbl">Full Name</span><span class="detail-val">Debashish Lal</span></div>
+      <div class="detail-row"><span class="detail-lbl">Location</span><span class="detail-val">Puri, Odisha, India</span></div>
+      <div class="detail-row"><span class="detail-lbl">Email</span><span class="detail-val"><a href="mailto:laldevsu301@gmail.com">laldevsu301@gmail.com</a></span></div>
+      <div class="detail-row"><span class="detail-lbl">Best Way to Reach</span><span class="detail-val highlight">Email or LinkedIn</span></div>
+      <div class="detail-row"><span class="detail-lbl">LinkedIn</span><span class="detail-val"><a href="https://www.linkedin.com/in/debashish-lal" target="_blank">linkedin.com/in/debashish-lal</a></span></div>
+      <div class="detail-row"><span class="detail-lbl">Languages</span><span class="detail-val">English, Hindi, Odia</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ───────────────────────────────────────────── -->
+<section id="experience">
+  <div class="sec-head sr">
+    <span class="sec-num">02</span>
+    <h2 class="sec-title">Experience</h2>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="exp-item sr">
+    <div>
+      <div class="exp-period">Nov 2020 — Present</div>
+      <div class="exp-co">R.K. Mahapatra &amp; Associates</div>
+    </div>
+    <div>
+      <div class="exp-role">Tax Accountant &amp; Consultant</div>
+      <p class="exp-desc">Advising clients on all aspects of taxation law including income tax, GST, payroll,
+      and sales tax compliance. Preparing and auditing tax returns and reviewing client records to determine
+      appropriate financial treatment of income and deductions. Assisting in preparation of business plans,
+      legal agreements, retirement plans, estate plans, and income tax strategies for high-net-worth individuals.
+      Currently representing clients in <strong>Faceless Appeals before the CIT(A)</strong>, achieving
+      favourable outcomes through thorough preparation and strategic argumentation.</p>
+      <div class="tags">
+        <span class="tag">Income Tax</span><span class="tag">GST Compliance</span>
+        <span class="tag">Tax Advisory</span><span class="tag">Faceless Appeals</span>
+        <span class="tag">CIT(A)</span><span class="tag">Audit</span><span class="tag">HNI Planning</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="exp-item sr">
+    <div>
+      <div class="exp-period">2020 — Present</div>
+      <div class="exp-co">Independent</div>
+    </div>
+    <div>
+      <div class="exp-role">Professional Trader &amp; Investor</div>
+      <p class="exp-desc">Actively investing and trading across Indian equity markets and US markets via
+      <strong>GIFT City (Gujarat International Finance Tec-City)</strong> from India. Applying rigorous
+      financial analysis, risk management, and macroeconomic research to build and manage a diversified
+      investment portfolio across geographies and asset classes.</p>
+      <div class="tags">
+        <span class="tag">Indian Markets</span><span class="tag">US Markets</span>
+        <span class="tag">GIFT City</span><span class="tag">Equity Research</span>
+        <span class="tag">Risk Management</span><span class="tag">Portfolio Management</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ───────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="sec-head sr">
+    <span class="sec-num">03</span>
+    <h2 class="sec-title">Skills</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-group sr">
+      <div class="skill-group-title">Taxation &amp; Compliance</div>
+      <div class="skill-row"><span class="skill-name">Income Tax Planning</span><div class="skill-track"><div class="skill-fill" data-w="95%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">GST Compliance</span><div class="skill-track"><div class="skill-fill" data-w="92%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Tax Advisory</span><div class="skill-track"><div class="skill-fill" data-w="90%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Faceless Appeals / CIT(A)</span><div class="skill-track"><div class="skill-fill" data-w="85%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Payroll &amp; TDS</span><div class="skill-track"><div class="skill-fill" data-w="88%"></div></div></div>
+    </div>
+    <div class="skill-group sr">
+      <div class="skill-group-title">Finance &amp; Investing</div>
+      <div class="skill-row"><span class="skill-name">Equity Research</span><div class="skill-track"><div class="skill-fill" data-w="85%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Portfolio Management</span><div class="skill-track"><div class="skill-fill" data-w="82%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Financial Analysis</span><div class="skill-track"><div class="skill-fill" data-w="88%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">US Markets / GIFT City</span><div class="skill-track"><div class="skill-fill" data-w="78%"></div></div></div>
+    </div>
+    <div class="skill-group sr">
+      <div class="skill-group-title">Accounting &amp; Soft Skills</div>
+      <div class="skill-row"><span class="skill-name">Corporate Auditing</span><div class="skill-track"><div class="skill-fill" data-w="90%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Client Management</span><div class="skill-track"><div class="skill-fill" data-w="92%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Problem Solving</span><div class="skill-track"><div class="skill-fill" data-w="88%"></div></div></div>
+      <div class="skill-row"><span class="skill-name">Communication</span><div class="skill-track"><div class="skill-fill" data-w="85%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EDUCATION ─────────────────────────────────────────────── -->
+<section id="education">
+  <div class="sec-head sr">
+    <span class="sec-num">04</span>
+    <h2 class="sec-title">Education</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="edu-item sr">
+    <div><div class="edu-yr">June 2018 — Aug 2021</div></div>
+    <div>
+      <div class="edu-deg">Bachelor of Commerce (B.Com)</div>
+      <div class="edu-org">Utkal University &nbsp;·&nbsp; Odisha, India</div>
+      <div class="edu-note">Specialisation in Accounting &amp; Finance. Strong foundation in financial reporting, taxation, auditing, and business law.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CERTIFICATIONS ────────────────────────────────────────── -->
+<section id="certifications">
+  <div class="sec-head sr">
+    <span class="sec-num">05</span>
+    <h2 class="sec-title">Certifications</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="edu-item sr">
+    <div><div class="edu-yr">NSDC</div></div>
+    <div>
+      <div class="edu-deg">GST Practitioner Certificate</div>
+      <div class="edu-org">National Skill Development Corporation (NSDC)</div>
+      <div class="edu-note">Covers GST registration, return filing, input tax credit, compliance, and advisory for businesses and individuals.</div>
+    </div>
+  </div>
+  <div class="edu-item sr">
+    <div><div class="edu-yr">NIFM</div></div>
+    <div>
+      <div class="edu-deg">Diploma in Financial Management</div>
+      <div class="edu-org">National Institute of Financial Management (NIFM)</div>
+      <div class="edu-note">Advanced topics in financial markets, investment analysis, portfolio management, and capital market instruments.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ──────────────────────────────────────────────── -->
+<section id="projects">
+  <div class="sec-head sr">
+    <span class="sec-num">06</span>
+    <h2 class="sec-title">Projects</h2>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="confidential-box sr">
+    <div class="conf-icon">&#x26BF;</div>
+    <div>
+      <div class="conf-title">Projects Under Client Confidentiality</div>
+      <p class="conf-desc">The projects I have worked on are owned on behalf of my clients and are protected
+      under strict confidentiality agreements. Details, documentation, and outcomes cannot be shared publicly.
+      If you are a prospective client or employer and wish to learn more about the <strong>nature, scale, and
+      results</strong> of my work, please reach out and consult me directly — I am happy to discuss relevant
+      case studies in a <strong>private consultation.</strong></p>
+    </div>
+  </div>
+
+  <div class="proj-grid">
+    <div class="proj-card sr">
+      <div class="proj-num">Domain — 01</div>
+      <div class="proj-name">Tax Litigation &amp; Appeals</div>
+      <div class="proj-type">Faceless Appeals · CIT(A)</div>
+      <p class="proj-desc">Representing clients in Faceless Appeal proceedings before the CIT(A), achieving favourable outcomes through meticulous documentation and legal strategy.</p>
+      <a href="#contact" class="proj-cta">Consult Directly</a>
+    </div>
+    <div class="proj-card sr">
+      <div class="proj-num">Domain — 02</div>
+      <div class="proj-name">HNI Tax Strategy</div>
+      <div class="proj-type">Income Tax · Estate Planning</div>
+      <p class="proj-desc">Comprehensive income tax, estate, and retirement planning for high-net-worth individuals, minimising liability while ensuring full compliance.</p>
+      <a href="#contact" class="proj-cta">Consult Directly</a>
+    </div>
+    <div class="proj-card sr">
+      <div class="proj-num">Domain — 03</div>
+      <div class="proj-name">Business Process Optimisation</div>
+      <div class="proj-type">GST · Audit · Compliance</div>
+      <p class="proj-desc">Streamlined accounting workflows and compliance processes for corporate clients, reducing filing errors and improving operational efficiency.</p>
+      <a href="#contact" class="proj-cta">Consult Directly</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ───────────────────────────────────────────────── -->
+<section id="contact">
+  <div>
+    <div class="sec-head sr">
+      <span class="sec-num">07</span>
+      <h2 class="sec-title">Contact</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="contact-intro sr">Have an <em>opportunity</em> or just want to connect?</div>
+    <div class="sr">
+      <a href="mailto:laldevsu301@gmail.com" class="contact-row">
+        <span class="contact-lbl">Email</span>
+        <span class="contact-val">laldevsu301@gmail.com</span>
+      </a>
+      <a href="mailto:laldevsu301@gmail.com?subject=Call%20Request&body=Hi%20Debashish%2C%0A%0AI%27d%20like%20to%20schedule%20a%20call.%0A%0AName%3A%20%0AAvailability%3A%20%0ATopic%3A%20" class="contact-row">
+        <span class="contact-lbl">Phone / Call</span>
+        <span class="schedule-pill">&#x1F4C5; Schedule a Call</span>
+      </a>
+      <a href="https://www.linkedin.com/in/debashish-lal" target="_blank" class="contact-row">
+        <span class="contact-lbl">LinkedIn</span>
+        <span class="contact-val">linkedin.com/in/debashish-lal</span>
+      </a>
+      <div class="contact-row" style="pointer-events:none">
+        <span class="contact-lbl">Location</span>
+        <span class="contact-val">Puri, Odisha, India</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-right sr">
+    <div class="form-group">
+      <label class="form-lbl">Name</label>
+      <input type="text" class="form-input" id="fname" placeholder="Your name"/>
+    </div>
+    <div class="form-group">
+      <label class="form-lbl">Email</label>
+      <input type="email" class="form-input" id="femail" placeholder="your@email.com"/>
+    </div>
+    <div class="form-group">
+      <label class="form-lbl">Message</label>
+      <textarea class="form-textarea" id="fmsg" placeholder="Tell me about your project or opportunity..."></textarea>
+    </div>
+    <button class="btn-gold" id="sendBtn" style="cursor:pointer">Send Message</button>
+  </div>
+</section>
+
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <span class="foot-copy">© 2025 Debashish Lal. All rights reserved.</span>
+  <a href="#hero" class="foot-top">Back to top ↑</a>
+</footer>
+
+<script>
+/* ============================================================
+   ALL JS — self-contained IIFE, no dependencies
+   ============================================================ */
+(function(){
+
+  /* ── 1. CURSOR ── completely self-contained ──────────────── */
+  var dot  = document.getElementById('cur-dot');
+  var ring = document.getElementById('cur-ring');
+
+  /* live mouse coords */
+  var mx = -300, my = -300;
+  /* ring's smoothed coords */
+  var rx = -300, ry = -300;
+  /* ring scale lerp */
+  var sc = 1, scTarget = 1;
+
+  /* update dot position immediately on every mousemove */
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = 'translate('+(mx-4)+'px,'+(my-4)+'px)';
+  });
+
+  /* ring runs in an eternal RAF loop — no start/stop, no ticking flag */
+  function tick(){
+    rx += (mx - rx) * 0.13;
+    ry += (my - ry) * 0.13;
+    sc += (scTarget - sc) * 0.14;
+    /* offset is always half the CSS size (34/2 = 17) — scale doesn't change this
+       because we scale via transform, not width/height */
+    ring.style.transform =
+      'translate('+(rx-17)+'px,'+(ry-17)+'px) scale('+sc.toFixed(4)+')';
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  /* hover enlarge */
+  document.querySelectorAll('a,button,.proj-card,.exp-item,.skill-group,.tag')
+    .forEach(function(el){
+      el.addEventListener('mouseenter', function(){
+        scTarget = 1.55;
+        ring.style.borderColor = 'var(--accent2)';
+        ring.style.opacity = '0.8';
+      });
+      el.addEventListener('mouseleave', function(){
+        scTarget = 1;
+        ring.style.borderColor = 'var(--accent)';
+        ring.style.opacity = '0.55';
+      });
+    });
+
+  /* ── 2. NAV SCROLL ───────────────────────────────────────── */
+  var nav = document.getElementById('nav');
+  window.addEventListener('scroll', function(){
+    nav.classList[window.scrollY > 40 ? 'add' : 'remove']('scrolled');
+  }, {passive:true});
+
+  /* ── 3. SCROLL-REVEAL ────────────────────────────────────── */
+  /* Fallback: if IntersectionObserver not supported, just show everything */
+  if(!window.IntersectionObserver){
+    document.querySelectorAll('.sr').forEach(function(el){ el.classList.add('on'); });
+  } else {
+    var srObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('on');
+          srObs.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.07, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.sr').forEach(function(el){ srObs.observe(el); });
+  }
+
+  /* ── 4. SKILL BARS ───────────────────────────────────────── */
+  if(!window.IntersectionObserver){
+    document.querySelectorAll('.skill-fill').forEach(function(b){
+      b.style.width = b.getAttribute('data-w');
+    });
+  } else {
+    var barObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.querySelectorAll('.skill-fill').forEach(function(b){
+            b.style.width = b.getAttribute('data-w');
+          });
+          barObs.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.25});
+    document.querySelectorAll('.skill-group').forEach(function(g){ barObs.observe(g); });
+  }
+
+  /* ── 5. CONTACT FORM ─────────────────────────────────────── */
+  document.getElementById('sendBtn').addEventListener('click', function(){
+    var n = document.getElementById('fname').value.trim();
+    var e = document.getElementById('femail').value.trim();
+    var m = document.getElementById('fmsg').value.trim();
+    if(!n || !e || !m){
+      this.textContent = 'Fill all fields first';
+      var btn = this;
+      setTimeout(function(){ btn.textContent = 'Send Message'; }, 2000);
+      return;
+    }
+    window.location.href =
+      'mailto:laldevsu301@gmail.com'
+      +'?subject='+encodeURIComponent('Portfolio Enquiry from '+n)
+      +'&body='+encodeURIComponent(m+'\n\nFrom: '+n+' <'+e+'>');
+  });
+
+})();
+</script>
+</body>
+</html>
